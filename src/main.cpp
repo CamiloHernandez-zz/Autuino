@@ -18,13 +18,18 @@ const int Pin_Motor_B2 = 5;
 
 //*******************************Setup********************************//
 
+ConMotor motor(Pin_Motor_A1, Pin_Motor_A2, Pin_Motor_B1, Pin_Motor_B2);
+
 void setup(){
+
+    motor.writeMotor('B', 255, true);
+    motor.writeMotor('A', 255, true);
 
 }
 
 void loop(){
 
-  
+
 }
 
 //************************Fin codigo**************************//
