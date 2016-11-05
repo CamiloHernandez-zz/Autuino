@@ -63,7 +63,7 @@ void loop(){
 
     duracion = pulseIn(echoPin, HIGH);
 
-    //Ecuación para calcular la distáncia en centimetros
+    //Ecuación para calcular la distancia en centimetros
     distancia = (duracion/2) / 29.1;
 
     if (distancia < 25){
