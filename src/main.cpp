@@ -35,8 +35,8 @@ void setup(){
      // Iniciando serial
     Serial.begin(9600);
 
-    motor.writeMotor('B', 200, true);
-    motor.writeMotor('A', 200, true);
+    //motor.writeMotor('B', 225, true);
+    //motor.writeMotor('A', 225, true);
 
     // Declaración sobre E/S de los pines
     pinMode(trigPin, OUTPUT);
