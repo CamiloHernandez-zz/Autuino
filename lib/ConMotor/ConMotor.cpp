@@ -25,21 +25,26 @@ void ConMotor::writeMotor(char Motor, int Velocidad, bool Sentido){
   if(Motor == 'A'){
     if(Sentido == true){
       _PinSalida = _Pin_Motor_A1;
+      _PinApagado = _Pin_Motor_A2;
     }
     if(Sentido == false){
       _PinSalida = _Pin_Motor_A2;
+      _PinApagado = _Pin_Motor_A1;
     }
   }
   if(Motor == 'B'){
     if(Sentido == true){
       _PinSalida = _Pin_Motor_B1;
+      _PinApagado = _Pin_Motor_B2;
     }
     if(Sentido == false){
       _PinSalida = _Pin_Motor_B2;
+      _PinApagado = _Pin_Motor_B1;
     }
   }
 
   analogWrite(_PinSalida,Velocidad);
+  analogWrite(_PinApagado,0);
 }
 void ConMotor::FrenoM(){
  analogWrite(_Pin_Motor_A1,255);
