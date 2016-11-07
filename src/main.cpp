@@ -19,7 +19,7 @@ const int trigPin = A4;
 const int echoPin = A5;
 
 // Variables del ultrasonido
-int duracion, distancia;
+unsigned int duracion, distancia_frontal, distancia_izq, distancia_der, distancia;
 
 //*********************Fin declaraciones**********************//
 
@@ -71,7 +71,7 @@ void setup(){
     pinMode(echoPin, INPUT);
 
     //Moviendo el Servo a la posición inicial
-    servo.write(180);
+    servo.write(125);
 
     //Mensaje de bienvenida
     Serial.println("AOK");
@@ -82,15 +82,54 @@ void setup(){
 
 void loop(){
 
-    distancia = UltraSonido();
 
-    if (distancia < 25){
+  motor.writeMotor('B', 225, true);
+  motor.writeMotor('A', 225, true);
+
+    distancia_frontal = UltraSonido();
+
+    if (distancia_frontal < 25){
      Serial.print ("Obstaculo detectedo a " );
-     Serial.print (distancia);
+     Serial.print (distancia_frontal);
      Serial.println ( " centimetros.");
-     Serial.println ( " Revisando a que lado ir.");
+     Serial.println ( "Deteniendo motores");
+
+     motor.FrenoM();
+
+     Serial.println ( "Revisando a que lado ir.");
+
+     servo.write(70);
+
+     delay(500);
+     distancia_izq = UltraSonido();
 
      servo.write(180);
+
+    delay(500);
+     distancia_der = UltraSonido();
+
+     delay(500);
+     servo.write(125);
+
+       if(distancia_der>distancia_izq){
+         motor.writeMotor('A',0,false);
+         motor.writeMotor('B',255,true);
+
+         delay(1000);
+
+         distancia_der = 0;
+         distancia_izq = 0;
+       }
+
+       if(distancia_der<distancia_izq){
+         motor.writeMotor('B',0,true);
+         motor.writeMotor('A',255,false);
+
+         delay(1000);
+
+         distancia_der = 0;
+         distancia_izq = 0;
+       }
 
 
     }
