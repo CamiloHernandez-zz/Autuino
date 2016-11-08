@@ -22,6 +22,13 @@ const int echoPin = A5;
 // Variables del ultrasonido
 unsigned int duracion, distancia_frontal, distancia_izq, distancia_der, distancia;
 
+// Movimientos
+const int Tiempo_de_giro = 600; //ms
+const int Angulo_izq = 180; //grados
+const int Angulo_der = 70;  //grados
+const int Angulo_cen = 125;  //grados
+const int distancia_para_giro = 15; //cm
+
 //*********************Fin declaraciones**********************//
 
 
@@ -72,7 +79,7 @@ void setup(){
     pinMode(echoPin, INPUT);
 
     //Moviendo el Servo a la posición inicial
-    servo.write(125);
+    servo.write(Angulo_cen);
 
     //Mensaje de bienvenida
     Serial.println("AOK");
@@ -83,38 +90,45 @@ void setup(){
 
 void loop(){
 
-
+  //Iniciamos por defecto los motores en la velocidad maxima y dirección frontal
   motor.writeMotor('B', 225, true);
   motor.writeMotor('A', 225, true);
 
-    distancia_frontal = UltraSonido();
+  // Medimos que tan lejos esta el auto de llegar a un objeto
+  distancia_frontal = UltraSonido();
 
-    if (distancia_frontal < 30){
 
-    Serial.println ();
-    Serial.println ( "-----------------------------------------------------");
+     // Cuando el auto se acerque a un objeto:
+    if (distancia_frontal < distancia_para_giro){
+
+     // Anunciamos por serial la proximidad
+     Serial.println ();
+     Serial.println ( "-----------------------------------------------------");
      Serial.print ("Obstaculo detectedo a " );
      Serial.print (distancia_frontal);
      Serial.println ( " centimetros.");
-
      Serial.println ( "Deteniendo motores");
 
      motor.FrenoM();
 
      Serial.println ( "Revisando a que lado voy:");
 
-     servo.write(70);
 
+    // Giramos el servo del ultrasonido hacia la derecha para medir la distancia
+     servo.write(Angulo_der);
      delay(500);
      distancia_der = UltraSonido();
 
-     servo.write(180);
 
-    delay(500);
+    // Giramos el servo del ultrasonido hacia la izquierda para medir la distancia
+     servo.write(Angulo_izq);
+     delay(500);
      distancia_izq = UltraSonido();
 
+
+    // Devolvemos el servo al centro
      delay(500);
-     servo.write(125);
+     servo.write(Angulo_cen);
 
        if(distancia_der>distancia_izq){
 
@@ -122,14 +136,16 @@ void loop(){
            Serial.print (distancia_der);
            Serial.println ( " centimetros).");
 
+           // Hacemos funcionar solo uno de los motores para girar
+           motor.writeMotor('B',0,false);
+           motor.writeMotor('A',255,false);
 
-         motor.writeMotor('B',0,false);
-         motor.writeMotor('A',255,false);
+           // Le damos tiempo para que gire
+           delay(Tiempo_de_giro);
 
-         delay(800);
-
-         distancia_der = 0;
-         distancia_izq = 0;
+           // Reiniciamos los valores
+           distancia_der = 0;
+           distancia_izq = 0;
        }
 
        if(distancia_der<distancia_izq){
@@ -138,17 +154,19 @@ void loop(){
          Serial.print (distancia_izq);
          Serial.println ( " centimetros).");
 
+         // Hacemos funcionar solo uno de los motores para girar
          motor.writeMotor('A',0,true);
          motor.writeMotor('B',255,false);
 
-         delay(800);
+         // Le damos tiempo para que gire
+         delay(Tiempo_de_giro);
 
+         // Reiniciamos los valores
          distancia_der = 0;
          distancia_izq = 0;
        }
 
        Serial.println ( "-----------------------------------------------------");
-
 
     }
 
