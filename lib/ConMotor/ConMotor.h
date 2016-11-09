@@ -18,6 +18,7 @@ class ConMotor
      int _Velocidad;
      bool _Sentido;
      int _PinSalida;
+     int _PinApagado;
 
 };
 
